@@ -1,11 +1,1 @@
-%sql
-CREATE DATABASE IF NOT EXISTS spark_catalog.bronze
-LOCATION 'dbfs/FileStore/Ampev/bronze/';
 
-%sql
-CREATE DATABASE IF NOT EXISTS spark_catalog.silver
-LOCATION 'dbfs/FileStore/Ampev/silver/';
-
-%sql
-CREATE DATABASE IF NOT EXISTS spark_catalog.gold
-LOCATION 'dbfs/FileStore/Ampev/gold/';
