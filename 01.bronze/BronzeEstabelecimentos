@@ -1,0 +1,36 @@
+# Importações
+from pyspark.sql.functions import current_date, current_timestamp, expr
+
+#Nome do Database
+database = "bronze"
+tabela = "estabelecimentos"
+
+
+#path 
+caminho_arquivo = 'dbfs:/FileStore/Ampev/estabelecimentos.csv'
+
+df = spark.read.format("csv").option("header", True).load(caminho_arquivo)
+
+df.display()
+
+# Incluir colunas de controle
+df = df.withColumn("data_carga", current_date())
+df = df.withColumn("data_hora_carga", expr("current_timestamp() - INTERVAL 3 HOURS"))
+
+
+display(df)
+
+#Grava os dados no formato Delta
+df.write \
+    .format('delta') \
+    .mode('overwrite') \
+    .option('mergeSchema', 'true') \
+    .option('overwriteSchema', 'true') \
+    .saveAsTable(f'{database}.{tabela}')
+print("Dados gravados com Sucesso!")
+
+%sql
+select * from bronze.estabelecimentos
+
+%sql
+DESCRIBE DETAIL bronze.estabelecimentos
